@@ -4,7 +4,6 @@
 from PFAlgorithm import PFAlgorithm as PFA
 from PriorityQueue import PriorityQueue as PQ
 from PathNode import PathNode as PN
-from GridMap import GridMap as GM
 
 class PFAlgorithmAStar(PFA):
 	''' path find algorithm : A* '''
@@ -18,7 +17,7 @@ class PFAlgorithmAStar(PFA):
 			for y in range(gridMap.cols):
 				gridNode = gridMap.getGridNode(x, y)
 				if gridNode is not None:
-					if gridNode.gnType != GM.NODE_TYPE_WALL:
+					if not gridMap.isWallNode(x, y):
 						hdis = self.getDistance(gridNode, endNode, distanceType)
 						if gridMap.isStartGridNode(gridNode.x, gridNode.y):
 							self.pMap[x][y] = PN(prev=None, gridNode=gridNode, gv=0, hv=hdis)
@@ -71,7 +70,7 @@ class PFAlgorithmAStar(PFA):
 		openSet.push(startPathNode)
 
 		endPathNode = self.pMap[endNode.x][endNode.y]
-		endPathNode.isClose = True
+		endPathNode.isInClose = True
 
 		ret = (PFA.RSLT_NONE,)
 		while not openSet.isEmpty() and ret[0] == PFA.RSLT_NONE:
@@ -88,6 +87,9 @@ class PFAlgorithmAStar(PFA):
 				ny = currGridNode.y + dv[1]
 				
 				if not gridMap.isValidPos(nx, ny):
+					continue
+
+				if gridMap.isThroughTheWall(currGridNode.x, currGridNode.y, dv):
 					continue
 
 				gCost = self.getGCost(dv)

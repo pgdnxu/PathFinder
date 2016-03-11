@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 import GridNode as gn
+import math
 
 class GridMap(object):
 	''' the grid map '''
@@ -147,6 +148,15 @@ class GridMap(object):
 		elif gmiType == GridMap.INIT_TYPE_MAZE:
 			self._genMazeGridMap()
 
+	def isThroughTheWall(self, x, y, dv):
+		if not dv:
+			return False
+		dcost = math.fabs(dv[0]) + math.fabs(dv[1])
+		if dcost != 2:
+			return False
+		if self.isWallNode(x+dv[0], y) and self.isWallNode(x, y+dv[1]):
+			return True
+		return False
 
 	def _genEmptyGridMap(self):
 		if self.mazeMaker is not None:

@@ -195,18 +195,6 @@ if __name__ == "__main__":
 
 	# path finder init
 	gridMap = GM(31,56)
-	# gridMap.setStartGridNode(0,0)
-	# gridMap.setEndGridNode(4,4)
-
-	# gridMap.setWallGridNode(0,1)
-	# gridMap.setWallGridNode(1,1)
-	# gridMap.setWallGridNode(2,1)
-	# gridMap.setWallGridNode(3,1)
-
-	# gridMap.setWallGridNode(1,3)
-	# gridMap.setWallGridNode(2,3)
-	# gridMap.setWallGridNode(3,3)
-	# gridMap.setWallGridNode(4,3)
 
 	# gridMap.printMap()
 
@@ -253,6 +241,7 @@ if __name__ == "__main__":
 					mapDrawer.draw()
 
 				if local_tag.tag_should_run_algorithm:
+					mapDrawer.draw()
 					algorithm = getAlgorithm(local_tag.tag_curr_pfa_type)
 					if algorithm is not None:
 						pathFinder.work(gridMap, algorithm, mapDrawer)
