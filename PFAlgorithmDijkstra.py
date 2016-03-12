@@ -4,6 +4,7 @@
 from PFAlgorithm import PFAlgorithm as PFA
 from PriorityQueue import PriorityQueue as PQ
 from PathNode import PathNode as PN
+
 class PFAlgorithmDijkstra(PFA):
 	''' path find algorithm : Dijkstra '''
 
