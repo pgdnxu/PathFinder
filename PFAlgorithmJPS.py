@@ -249,9 +249,9 @@ class PFAlgorithmJPS(PFA):
                 ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap), jumpPoint)
                 break
 
-            for i in range(len(self.visMap)):
-                for j in range(len(self.visMap[i])):
-                    self.visMap[i][j] = False
+            # for i in range(len(self.visMap)):
+            #     for j in range(len(self.visMap[i])):
+            #         self.visMap[i][j] = False
 
             for dv in PFA.DIR_VECTOR:
                 if not self.isOkPos(currGridNode, dv):
