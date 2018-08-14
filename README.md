@@ -20,9 +20,9 @@ Pathfinding algorithm simulator using python and pygame.
 - - -
 
 * random map
-![image](https://raw.githubusercontent.com/pgdnxu/PathFinder/master/res/random-map-pic.png)
+![image](https://raw.githubusercontent.com/pgdnxu/PathFinder/master/res/random-map-pic.jpeg)
 
 - - -
 
 * random maze map
-![image](https://raw.githubusercontent.com/pgdnxu/PathFinder/master/res/random-maze-pic.png)
+![image](https://raw.githubusercontent.com/pgdnxu/PathFinder/master/res/random-maze-pic.jpeg)
