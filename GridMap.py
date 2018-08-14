@@ -126,7 +126,7 @@ class GridMap(object):
 	def isWallNode(self, x, y):
 		node = self.getGridNode(x, y)
 		if not node:
-			return False
+			return True
 		if node.gnType == GridMap.NODE_TYPE_WALL:
 			return True
 		return False

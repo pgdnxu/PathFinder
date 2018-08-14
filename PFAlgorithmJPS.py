@@ -16,6 +16,7 @@ class PFAlgorithmJPS(PFA):
     def initPathMap(self, gridMap, distanceType):
         endNode = gridMap.getEndGridNode()
         self.pMap = [[0 for y in range(gridMap.cols)] for x in range(gridMap.rows)]
+        self.visMap = [[False for y in range(self.gridMap.cols)] for x in range(self.gridMap.rows)]
         for x in range(gridMap.rows):
             for y in range(gridMap.cols):
                 gridNode = gridMap.getGridNode(x, y)
@@ -66,6 +67,9 @@ class PFAlgorithmJPS(PFA):
         if not self.gridMap.isValidPos(nx, ny):
             return False
 
+        if self.gridMap.isWallNode(nx, ny):
+            return False
+
         if self.gridMap.isThroughTheWall(gridNode.x, gridNode.y, dv):
             return False
 
@@ -82,14 +86,12 @@ class PFAlgorithmJPS(PFA):
         gCost = self.getEuclideanDistance(prevNode.gridNode, jumpNode.gridNode)
 
         if jumpNode.isInClose:
-            # print("1>>>>>>>>", prevNode.gv ,gCost ,jumpNode.gv)
             if prevNode.gv + gCost < jumpNode.gv:
                 jumpNode.isInClose = False
                 jumpNode.updatePrev(prevNode, gCost)
                 openSet.push(jumpNode)
                 jumpNode.isInOpen = True
         else:
-            # print("2>>>>>>>>", prevNode.gv ,gCost ,jumpNode.gv)
             if prevNode.gv + gCost < jumpNode.gv:
                 jumpNode.updatePrev(prevNode, gCost)
                 if not jumpNode.isInOpen:
@@ -99,11 +101,9 @@ class PFAlgorithmJPS(PFA):
                     openSet.update(jumpNode)
 
     def _checkJumpNode(self, testX, testY, obsX, obsY, negNeigX, negNeigY):
-        # print(":::>>", testX, testY, obsX, obsY, negNeigX, negNeigY)
         return self.gridMap.isValidPos(testX, testY) and not self.gridMap.isWallNode(testX, testY) and self.gridMap.isWallNode(obsX, obsY) and self.gridMap.isValidPos(negNeigX, negNeigY) and not self.gridMap.isWallNode(negNeigX, negNeigY)
 
     def isJumpNode(self, gn, dirType):
-        # dv = PFA.DIR_VECTOR[dirType]
         if dirType == self.DIR_1:
             return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y-1)
         elif dirType == self.DIR_2:
@@ -129,8 +129,6 @@ class PFAlgorithmJPS(PFA):
             return None
 
         currGridNode = testNode.gridNode
-        # print(":============================================>>>>", currGridNode.x, currGridNode.y)
-        # time.sleep(0.5)
 
         if self.visMap[currGridNode.x][currGridNode.y]:
             return None
@@ -138,14 +136,11 @@ class PFAlgorithmJPS(PFA):
         self.visMap[currGridNode.x][currGridNode.y] = True
 
         if self.gridMap.isEndGridNode(currGridNode.x, currGridNode.y):
-            # print("find!")
             return testNode
 
         dirType = self.getDirBetweenTwoNode(lastNode.gridNode, currGridNode)
-        # print("dirType:",dirType)
         if self.isJumpNode(currGridNode, dirType):
             # find a jump , then return
-            # print("jump-node:", currGridNode.x, currGridNode.y)
             return testNode
         else:
             if dirType == self.DIR_1 or dirType == self.DIR_2 or dirType == self.DIR_3 or dirType == self.DIR_4:
@@ -158,8 +153,7 @@ class PFAlgorithmJPS(PFA):
 
                 nextJumpNode = self.findJumpNode(lastJumpNode, testNode, nextNode, openSet)
 
-                if nextJumpNode:
-                    self.updateJumpNode(lastJumpNode, nextJumpNode, openSet)
+                return nextJumpNode
 
             else:
                 accDirType1, accDirType2 = self.getAccompanyDir(dirType)
@@ -199,21 +193,20 @@ class PFAlgorithmJPS(PFA):
                 if self.isOkPos(currGridNode, dv):
                     nextNode = self.getPathNode(currGridNode, dv)
                     nextJumpNode = None
-                    if currIsJumpNode:
-                        nextJumpNode = self.findJumpNode(testNode, testNode, nextNode, openSet)
-                    else:
-                        nextJumpNode = self.findJumpNode(lastJumpNode, testNode, nextNode, openSet)
+                    nextJumpNode = self.findJumpNode(lastJumpNode, testNode, nextNode, openSet)
                     if nextJumpNode:
                         if currIsJumpNode:
                             self.updateJumpNode(testNode, nextJumpNode, openSet)
                         else:
                             self.updateJumpNode(lastJumpNode, nextJumpNode, openSet)
+                    return nextJumpNode
+
+                return None
 
         return None
 
     def run(self, gridMap, distanceType=PFA.DIS_TYPE_MANHATTAN):
 
-        # print("----------------------------------------------------------------------")
 
         if not gridMap:
             return (PFA.RSLT_GRIDMAP_ERR,)
@@ -240,30 +233,23 @@ class PFAlgorithmJPS(PFA):
         openSet.push(startPathNode)
 
         endPathNode = self.pMap[endNode.x][endNode.y]
-        # endPathNode.isInClose = True
 
         ret = (PFA.RSLT_NONE,)
         while not openSet.isEmpty() and ret[0] == PFA.RSLT_NONE:
             currNode = openSet.pop()
             currNode.isInClose = True
-
-            # print("currNode.gv, hv, fv:", currNode.gv, currNode.hv, currNode.fv)
-
             currGridNode = currNode.gridNode
-
-            # print("<><><><><><> curr:", currGridNode.x, currGridNode.y)
-            # if currNode.prev:
-                # print("<><> prev:", currNode.prev.gridNode.x, currNode.prev.gridNode.y)
 
             if gridMap.isEndGridNode(currGridNode.x, currGridNode.y):
                 ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap))
                 break
 
-            self.visMap = [[False for y in range(self.gridMap.cols)] for x in range(self.gridMap.rows)]
+            for i in range(len(self.visMap)):
+                for j in range(len(self.visMap[i])):
+                    self.visMap[i][j] = False
+
 
             for dv in PFA.DIR_VECTOR:
-                # print("dv:", dv[0], dv[1])
-                # self.visMap = [[False for y in range(self.gridMap.cols)] for x in range(self.gridMap.rows)]
                 if not self.isOkPos(currGridNode, dv):
                     continue
                 jumpNode = self.findJumpNode(currNode, currNode, self.getPathNode(currGridNode, dv), openSet)

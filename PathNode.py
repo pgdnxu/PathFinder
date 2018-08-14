@@ -18,6 +18,7 @@ class PathNode(PriorityItem):
 	def updatePrev(self, prev, gCost):
 		if not prev:
 			return
+
 		self.prev = prev
 		self.gv = prev.gv + gCost
 		self.fv = self.gv + self.hv
