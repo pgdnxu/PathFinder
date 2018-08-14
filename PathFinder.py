@@ -23,7 +23,7 @@ class PathFinder(object):
 			# for item in ret[1]:
 			# 	print("%d,%d:%d" % (item.gridNode.x, item.gridNode.y, item.getPriorityValue()))
 			if mapDrawer is not None:
-				mapDrawer.drawPath(ret[1],ret[2])
+				mapDrawer.drawPath(ret[1],ret[2],ret[3])
 			return True
 		else:
 			print("err:%d" % ret[0])

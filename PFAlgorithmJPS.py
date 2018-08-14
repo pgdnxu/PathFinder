@@ -105,9 +105,9 @@ class PFAlgorithmJPS(PFA):
 
     def isJumpNode(self, gn, dirType):
         if dirType == self.DIR_1:
-            return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y-1)
+            return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x-1, gn.y+1)
         elif dirType == self.DIR_2:
-            return self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x+1, gn.y+1)
+            return self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y+1)
         elif dirType == self.DIR_3:
             return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x+1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x+1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y-1)
         elif dirType == self.DIR_4:
@@ -137,6 +137,9 @@ class PFAlgorithmJPS(PFA):
 
         if self.gridMap.isEndGridNode(currGridNode.x, currGridNode.y):
             return testNode
+
+        if testNode.isInOpen:
+            return None
 
         dirType = self.getDirBetweenTwoNode(lastNode.gridNode, currGridNode)
         if self.isJumpNode(currGridNode, dirType):
@@ -235,19 +238,20 @@ class PFAlgorithmJPS(PFA):
         endPathNode = self.pMap[endNode.x][endNode.y]
 
         ret = (PFA.RSLT_NONE,)
+        jumpPoint = []
         while not openSet.isEmpty() and ret[0] == PFA.RSLT_NONE:
             currNode = openSet.pop()
+            jumpPoint.append(currNode)
             currNode.isInClose = True
             currGridNode = currNode.gridNode
 
             if gridMap.isEndGridNode(currGridNode.x, currGridNode.y):
-                ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap))
+                ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap), jumpPoint)
                 break
 
             for i in range(len(self.visMap)):
                 for j in range(len(self.visMap[i])):
                     self.visMap[i][j] = False
-
 
             for dv in PFA.DIR_VECTOR:
                 if not self.isOkPos(currGridNode, dv):

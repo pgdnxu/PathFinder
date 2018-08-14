@@ -64,7 +64,7 @@ class MapDrawer(object):
 
 				self.pygame.draw.rect(self.screen, drawColor, ((y*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[0],x*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[1]),(MapDrawer.GRID_SIDE_LEN, MapDrawer.GRID_SIDE_LEN)))
 
-	def drawPath(self, pathNodes, visNodes):
+	def drawPath(self, pathNodes, visNodes, searchNodes):
 
 		bigestStep = 1
 		if visNodes:
@@ -88,6 +88,11 @@ class MapDrawer(object):
 					nodeGrid = node.gridNode
 					prevGrid = prev.gridNode
 					self.pygame.draw.line(self.screen, MapDrawer.COLOR_PATH_LINE, (nodeGrid.y*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[0]+MapDrawer.GRID_SIDE_LEN/2,nodeGrid.x*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[1]+MapDrawer.GRID_SIDE_LEN/2),(prevGrid.y*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[0]+MapDrawer.GRID_SIDE_LEN/2,prevGrid.x*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[1]+MapDrawer.GRID_SIDE_LEN/2),2)
+
+		if searchNodes:
+			for node in searchNodes:
+				nodeGrid = node.gridNode
+				self.pygame.draw.circle(self.screen, MapDrawer.COLOR_PATH_LINE, (nodeGrid.y*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[0]+MapDrawer.GRID_SIDE_LEN/2, nodeGrid.x*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[1]+MapDrawer.GRID_SIDE_LEN/2), 4, 1)
 
 
 	def getCoordFromPos(self, x, y):

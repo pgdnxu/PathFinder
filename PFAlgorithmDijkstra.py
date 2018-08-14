@@ -96,7 +96,7 @@ class PFAlgorithmDijkstra(PFA):
 
 				if gridMap.isEndGridNode(nx, ny):
 					endPathNode.updatePrev(currNode, gCost)
-					ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap))
+					ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap), None)
 					break
 
 				newNode = self.pMap[nx][ny]

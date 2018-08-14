@@ -74,8 +74,10 @@ class PFAlgorithmAStar(PFA):
 		endPathNode.isInClose = True
 
 		ret = (PFA.RSLT_NONE,)
+		searchNode = []
 		while not openSet.isEmpty() and ret[0] == PFA.RSLT_NONE:
 			currNode = openSet.pop()
+			searchNode.append(currNode)
 			currNode.isInClose = True
 
 			# print("%d,%d,%d" % (currNode.gridNode.x, currNode.gridNode.y,currNode.fv))
@@ -97,7 +99,7 @@ class PFAlgorithmAStar(PFA):
 
 				if gridMap.isEndGridNode(nx, ny):
 					endPathNode.updatePrev(currNode, gCost)
-					ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap))
+					ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap), searchNode)
 					break
 
 				newNode = self.pMap[nx][ny]
