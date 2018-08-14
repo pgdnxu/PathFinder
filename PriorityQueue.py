@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# author: Shannon Xu (pgdninf#gmail.com)
 
 class PriorityItem(object):
     def getPriorityValue(self):
@@ -41,18 +42,12 @@ class PriorityQueue(object):
         else:
             self.queue.insert(self.length, item)
 
-        # i = self.length  
-        # while i >= 2 and self.queue[i].getPriorityValue() < self.queue[i/2].getPriorityValue():  
-        #     self.queue[i] , self.queue[i/2] = self.queue[i/2] , self.queue[i]  
-        #     i = i / 2  
         self._updateAtIndex(self.length)
 
     def update(self, item):
         if not item:
             return
-        # while i >= 2 and self.queue[i].getPriorityValue() < self.queue[i/2].getPriorityValue():  
-        #     self.queue[i] , self.queue[i/2] = self.queue[i/2] , self.queue[i]  
-        #     i = i / 2
+            
         self._updateAtIndex(self.queue.index(item))        
 
     def _adjust(self):  

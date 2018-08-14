@@ -1,7 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# author: Shannon Xu (pgdninf#gmail.com)
 
 import math
+
+# dir type:
+#
+# 8 | 1 | 5
+#-----------
+# 4 |   | 2
+#-----------
+# 7 | 3 | 6
+#
 
 class PFAlgorithm(object):
 
@@ -18,6 +28,16 @@ class PFAlgorithm(object):
 
 	MAX_DISTANCE = 1000000
 
+	DIR_NONE = -1
+	DIR_1 = 0 # [-1,0]
+	DIR_2 = 1 # [0,1]
+	DIR_3 = 2 # [1,0]
+	DIR_4 = 3 # [0,-1]
+	DIR_5 = 4 # [-1,1]
+	DIR_6 = 5 # [1,1]
+	DIR_7 = 6 # [1,-1]
+	DIR_8 = 7 # [-1,-1]
+
 	DIR_VECTOR = [[-1,0],[0,1],[1,0],[0,-1],[-1,1],[1,1],[1,-1],[-1,-1]]
 
 	def __init__(self):
@@ -25,6 +45,33 @@ class PFAlgorithm(object):
 
 	def run(self, gridMap, distanceType):
 		return (RSLT_NONE,)
+
+	def getDirBetweenTwoNode(self, centerNode, sideNode):
+
+		# print("sideNode:", sideNode.x, sideNode.y)
+		# print("centerNode:", centerNode.x, centerNode.y)
+
+		deltaX = sideNode.x - centerNode.x
+		deltaY = sideNode.y - centerNode.y
+
+		if deltaX < 0 and deltaY == 0:
+			return self.DIR_1
+		elif deltaX == 0 and deltaY > 0:
+			return self.DIR_2
+		elif deltaX > 0 and deltaY == 0:
+			return self.DIR_3
+		elif deltaX == 0 and deltaY < 0:
+			return self.DIR_4
+		elif deltaX < 0 and deltaY > 0:
+			return self.DIR_5
+		elif deltaX > 0 and deltaY > 0:
+			return self.DIR_6
+		elif deltaX > 0 and deltaY < 0:
+			return self.DIR_7
+		elif deltaX < 0 and deltaY < 0:
+			return self.DIR_8
+		else:
+			return self.DIR_NONE
 
 	def getManhattanDistance(self, aNode, bNode):
 		if not aNode or not bNode:

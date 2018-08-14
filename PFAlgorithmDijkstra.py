@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# author: Shannon Xu (pgdninf#gmail.com) 
  
 from PFAlgorithm import PFAlgorithm as PFA
 from PriorityQueue import PriorityQueue as PQ

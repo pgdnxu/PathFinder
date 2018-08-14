@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+# author: Shannon Xu (pgdninf#gmail.com)
 
 import random
 import copy

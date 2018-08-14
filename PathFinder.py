@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# author: Shannon Xu (pgdninf#gmail.com)
 
 # from GridMap import GridMap as GM
 # from GridNode import GridNode as GN
