@@ -105,13 +105,17 @@ class PFAlgorithmJPS(PFA):
 
     def isJumpNode(self, gn, dirType):
         if dirType == self.DIR_1:
-            return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x-1, gn.y+1)
+            # return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y-1)
+            return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x-1, gn.y+1) 
         elif dirType == self.DIR_2:
+            # return self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x+1, gn.y+1)
             return self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y+1)
         elif dirType == self.DIR_3:
-            return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x+1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x+1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y-1)
+            # return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x+1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x+1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y+1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y-1)
+            return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x+1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y+1, gn.x+1, gn.y+1)
         elif dirType == self.DIR_4:
-            return self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x+1, gn.y-1)
+            # return self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x+1, gn.y-1)
+            return self._checkJumpNode(gn.x, gn.y, gn.x-1, gn.y, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y-1)
         elif dirType == self.DIR_5:
             return self._checkJumpNode(gn.x, gn.y, gn.x, gn.y-1, gn.x-1, gn.y-1) or self._checkJumpNode(gn.x, gn.y, gn.x+1, gn.y, gn.x+1, gn.y+1)
         elif dirType == self.DIR_6:
@@ -249,9 +253,9 @@ class PFAlgorithmJPS(PFA):
                 ret = (PFA.RSLT_OK, self.genValidPath(gridMap), self.genAllVisNodeSet(gridMap), jumpPoint)
                 break
 
-            # for i in range(len(self.visMap)):
-            #     for j in range(len(self.visMap[i])):
-            #         self.visMap[i][j] = False
+            for i in range(len(self.visMap)):
+                for j in range(len(self.visMap[i])):
+                    self.visMap[i][j] = False
 
             for dv in PFA.DIR_VECTOR:
                 if not self.isOkPos(currGridNode, dv):
