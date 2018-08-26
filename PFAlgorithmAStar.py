@@ -20,7 +20,7 @@ class PFAlgorithmAStar(PFA):
 				if gridNode is not None:
 					if not gridMap.isWallNode(x, y):
 						hdis = self.getDistance(gridNode, endNode, distanceType)
-						if gridMap.isStartGridNode(gridNode.x, gridNode.y):
+						if gridMap.isStartGridNode(gridNode.x, gridNode.y) or gridMap.isSelObjGridNode(gridNode.x, gridNode.y):
 							self.pMap[x][y] = PN(prev=None, gridNode=gridNode, gv=0, hv=hdis)
 						else:
 							self.pMap[x][y] = PN(prev=None, gridNode=gridNode, gv=PFA.MAX_DISTANCE, hv=hdis)
@@ -47,16 +47,20 @@ class PFAlgorithmAStar(PFA):
 						retSet.append(pathNode)
 		return retSet
 
-	def run(self, gridMap, distanceType=PFA.DIS_TYPE_MANHATTAN):
+	def run(self, gridMap, defStartNode=None, defEndNode=None, distanceType=PFA.DIS_TYPE_MANHATTAN):
 		if not gridMap:
 			return (PFA.RSLT_GRIDMAP_ERR,)
 
-		startNode = gridMap.getStartGridNode()
-		if not startNode:
+		startNode = defStartNode
+		if startNode is None:
+			startNode = gridMap.getStartGridNode()
+		if startNode is None:
 			return (PFA.RSLT_NO_START_NODE,)
 
-		endNode = gridMap.getEndGridNode()
-		if not endNode:
+		endNode = defEndNode
+		if endNode is None:
+			endNode = gridMap.getEndGridNode()
+		if endNode is None:
 			return (PFA.RSLT_NO_END_NODE,)
 
 		hdis = self.getDistance(startNode, endNode, distanceType)
@@ -75,7 +79,9 @@ class PFAlgorithmAStar(PFA):
 
 		ret = (PFA.RSLT_NONE,)
 		searchNode = []
+
 		while not openSet.isEmpty() and ret[0] == PFA.RSLT_NONE:
+
 			currNode = openSet.pop()
 			searchNode.append(currNode)
 			currNode.isInClose = True

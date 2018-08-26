@@ -19,6 +19,8 @@ class GridMap(object):
 	NODE_TYPE_START = 3
 	NODE_TYPE_END = 4
 
+	NODE_TYPE_SEL_OBJ = 5
+	NODE_TYPE_NSEL_OBJ = 6
 
 	def __init__(self, rows, cols, gmiType=INIT_TYPE_EMPTY, mazeMaker=None):
 		self.rows = rows
@@ -35,6 +37,16 @@ class GridMap(object):
 				self.gMap[x][y] = gn.GridNode(x, y, GridMap.NODE_TYPE_FLOOR)
 
 		self.resetGridMap(gmiType)
+		self.isRtsMode = False
+
+	def isRtsMode(self):
+		return self.isRtsMode
+
+	def openRtsMode(self):
+		self.isRtsMode = True
+
+	def closeRtsMode(self):
+		self.isRtsMode = False
 
 	def setMazeMaker(self, mazeMaker):
 		if not mazeMaker:
@@ -55,6 +67,10 @@ class GridMap(object):
 					print('s', end='')
 				elif node.gnType == GridMap.NODE_TYPE_END:
 					print('e', end='')
+				elif node.gnType == GridMap.NODE_TYPE_SEL_OBJ:
+					print('o', end='')
+				elif node.gnType == GridMap.NODE_TYPE_NSEL_OBJ:
+					print('b', end='')
 				else:
 					print('x', end='')
 			print()
@@ -77,6 +93,26 @@ class GridMap(object):
 	def setWallGridNode(self, x, y):
 		self._clearStartEndNode(x, y)
 		self._setGridNodeType(x, y, GridMap.NODE_TYPE_WALL)
+
+	def setSelObjGridNode(self, x, y):
+		self._clearStartEndNode(x, y)
+		self._setGridNodeType(x, y, GridMap.NODE_TYPE_SEL_OBJ)
+
+	def setNSelObjGridNode(self, x, y):
+		self._clearStartEndNode(x, y)
+		self._setGridNodeType(x, y, GridMap.NODE_TYPE_NSEL_OBJ)
+
+	def isSelObjGridNode(self, x, y):
+		node = self.getGridNode(x, y)
+		if not node:
+			return False
+		return node.gnType == GridMap.NODE_TYPE_SEL_OBJ
+
+	def isNSelObjGridNode(self, x, y):
+		node = self.getGridNode(x, y)
+		if not node:
+			return False
+		return node.gnType == GridMap.NODE_TYPE_NSEL_OBJ
 
 	def isStartGridNode(self, x, y):
 		return self.hasStartNode and x == self.sNode.x and y == self.sNode.y
@@ -127,9 +163,15 @@ class GridMap(object):
 		node = self.getGridNode(x, y)
 		if not node:
 			return True
-		if node.gnType == GridMap.NODE_TYPE_WALL:
-			return True
-		return False
+		if self.isRtsMode:
+			return node.gnType == GridMap.NODE_TYPE_WALL or node.gnType == GridMap.NODE_TYPE_NSEL_OBJ
+		return node.gnType == GridMap.NODE_TYPE_WALL
+
+	def isFloorNode(self, x, y):
+		node = self.getGridNode(x, y)
+		if not node:
+			return False
+		return node.gnType == GridMap.NODE_TYPE_FLOOR
 
 	def _setGridNodeType(self, x, y, gnType):
 		if self.isValidPos(x, y):

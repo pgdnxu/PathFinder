@@ -16,6 +16,8 @@ class MapDrawer(object):
 	COLOR_END = (10,30,150)
 	COLOR_PATH_LINE = (150,150,150)
 	COLOR_VIS_PATH_LINE = (50,50,50)
+	COLOR_SEL = (100, 100, 0)
+	COLOR_NSEL = (150, 50, 0)
 
 	def __init__(self, pygame, screen, screenSize, gridMap):
 		self.pygame = pygame
@@ -34,6 +36,8 @@ class MapDrawer(object):
 		self.sLineNum = self.gridMap.cols - 1
 		self.hLineNum = self.gridMap.rows - 1
 
+	def getGridMap(self):
+		return self.gridMap
 
 	def draw(self):
 		if self.screen is None:
@@ -55,12 +59,18 @@ class MapDrawer(object):
 		for x in range(self.gridMap.rows):
 			for y in range(self.gridMap.cols):
 				drawColor = MapDrawer.COLOR_FLOOR
+
+
 				if self.gridMap.isWallNode(x, y):
 					drawColor = MapDrawer.COLOR_WALL
 				elif self.gridMap.isStartGridNode(x, y):
 					drawColor = MapDrawer.COLOR_START
 				elif self.gridMap.isEndGridNode(x, y):
 					drawColor = MapDrawer.COLOR_END
+				elif self.gridMap.isSelObjGridNode(x, y):
+					drawColor = MapDrawer.COLOR_SEL
+				if self.gridMap.isNSelObjGridNode(x, y):
+					drawColor = MapDrawer.COLOR_NSEL
 
 				self.pygame.draw.rect(self.screen, drawColor, ((y*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[0],x*(MapDrawer.GRID_SIDE_LEN+1)+1+self.startPoint[1]),(MapDrawer.GRID_SIDE_LEN, MapDrawer.GRID_SIDE_LEN)))
 

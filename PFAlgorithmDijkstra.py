@@ -24,6 +24,7 @@ class PFAlgorithmDijkstra(PFA):
 							self.pMap[x][y] = PN(prev=None, gridNode=gridNode, gv=0)
 						else:
 							self.pMap[x][y] = PN(prev=None, gridNode=gridNode, gv=PFA.MAX_DISTANCE)
+	
 	def genValidPath(self, gridMap):
 		retSet = []
 		endGridNode = gridMap.getEndGridNode()
@@ -46,21 +47,21 @@ class PFAlgorithmDijkstra(PFA):
 						retSet.append(pathNode)
 		return retSet
 
-	def run(self, gridMap, distanceType=PFA.DIS_TYPE_MANHATTAN):
+	def run(self, gridMap, defStartNode=None, defEndNode=None, distanceType=PFA.DIS_TYPE_MANHATTAN):
 		if not gridMap:
 			return (PFA.RSLT_GRIDMAP_ERR,)
 
-		startNode = gridMap.getStartGridNode()
+		startNode = defStartNode
+		if not startNode:
+			startNode = gridMap.getStartGridNode()
 		if not startNode:
 			return (PFA.RSLT_NO_START_NODE,)
 
-		endNode = gridMap.getEndGridNode()
+		endNode = defEndNode
+		if not endNode:
+			endNode = gridMap.getEndGridNode()
 		if not endNode:
 			return (PFA.RSLT_NO_END_NODE,)
-
-		# hdis = self.getDistance(startNode, endNode, distanceType)
-		# if hdis < 0:
-		# 	return (PFA.RSLT_DIS_INVALID,)
 
 		self.initPathMap(gridMap, distanceType)
 

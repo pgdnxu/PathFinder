@@ -43,13 +43,10 @@ class PFAlgorithm(object):
 	def __init__(self):
 		pass
 
-	def run(self, gridMap, distanceType):
+	def run(self, gridMap, defStartNode, defEndNode, distanceType):
 		return (RSLT_NONE,)
 
 	def getDirBetweenTwoNode(self, centerNode, sideNode):
-
-		# print("sideNode:", sideNode.x, sideNode.y)
-		# print("centerNode:", centerNode.x, centerNode.y)
 
 		deltaX = sideNode.x - centerNode.x
 		deltaY = sideNode.y - centerNode.y
