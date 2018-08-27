@@ -6,13 +6,14 @@ from PFAlgorithmAStar import PFAlgorithmAStar as PFAAS
 from GridMap import GridMap as GM
 from SmartObj import SmartObj as SO
 from PFAlgorithm import PFAlgorithm as PFA
+import random
 
 class RTSSim(object):
 
     STATUS_STOP = 1
     STATUS_RUNNING = 2
 
-    SPEED_MSEC = 500
+    SPEED_MSEC = 100
 
     def __init__(self):
         self.mapDrawer = None
@@ -22,6 +23,7 @@ class RTSSim(object):
         self.selObj = None
         self.currStatus = RTSSim.STATUS_STOP
         self.pfaas = PFAAS()
+        self.noFindNum = 0
 
     def getCurrStatus(self):
         return self.currStatus
@@ -116,6 +118,17 @@ class RTSSim(object):
                 if obj.getX() == nx and obj.getY() == ny:
                     nselObjOnPathSet.add(obj)
 
+        for i in range(random.randint(1,5)):
+            rSecList = [obj for obj in nselObjOnPathSet]
+
+            for obj1 in rSecList:
+                for dv in PFA.DIR_VECTOR:
+                    nx = obj1.getX() + dv[0]
+                    ny = obj1.getY() + dv[1]
+                    for obj2 in self.nselObjList:
+                        if obj2.getX() == nx and obj2.getY() == ny:
+                            nselObjOnPathSet.add(obj2)
+
         for obj1 in nselObjOnPathList:
             for dv in PFA.DIR_VECTOR:
                 nx = obj1.getX() + dv[0]
@@ -124,7 +137,24 @@ class RTSSim(object):
                     if obj2.getX() == nx and obj2.getY() == ny:
                         nselObjOnPathSet.add(obj2)
 
+        for i in range(random.randint(1,5)):
+            rSecList = [obj for obj in nselObjOnPathSet]
+
+            for obj1 in rSecList:
+                for dv in PFA.DIR_VECTOR:
+                    nx = obj1.getX() + dv[0]
+                    ny = obj1.getY() + dv[1]
+                    for obj2 in self.nselObjList:
+                        if obj2.getX() == nx and obj2.getY() == ny:
+                            nselObjOnPathSet.add(obj2)
+
         cantMoveNum = 0
+
+        if self.noFindNum >= random.randint(3,15):
+            for i in range(random.randint(1,5)):
+                selObj._turn()
+            self.noFindNum = 0
+
         if not selObj.moveOneStep():
             cantMoveNum += 1
 
@@ -134,6 +164,29 @@ class RTSSim(object):
 
         if cantMoveNum == len(nselObjOnPathSet) + 1:
             return False
+        return True
+
+    def moveAPath2(self, selObj, onPathList):
+
+        endNode = self.gridMap.getEndGridNode()
+        if endNode is None:
+            return False
+
+        cantMoveNum = 0
+        if not selObj.moveOneStepAwayFrom(endNode.x, endNode.y):
+            cantMoveNum += 1
+
+        # for obj in self.nselObjList:
+        if onPathList is None:
+            onPathList = self.nselObjList
+
+        for obj in onPathList:
+            if not obj.moveOneStepAwayFrom(endNode.x, endNode.y):
+                cantMoveNum += 1
+
+        if cantMoveNum == len(self.nselObjList) + 1:
+            return False
+
         return True
 
     def work(self):
@@ -150,6 +203,7 @@ class RTSSim(object):
                     self._setSelObjNode(pathNodeList[-2].gridNode.x, pathNodeList[-2].gridNode.y)
             
             elif ret[0] == PFA.RSLT_NONE:
+                self.noFindNum += 1
                 #没有直达路径，需要队友让路
                 self.gridMap.closeRtsMode()
                 ret2 = self.pfaas.run(self.gridMap, self.gridMap.getGridNode(self.selObj.getX(), self.selObj.getY()))
@@ -169,8 +223,21 @@ class RTSSim(object):
                                         onPathList.append(i1)
 
                             self.gridMap.openRtsMode()
-                            if not self.moveAPath(self.selObj, onPathList):
+                            
+                            moveRet = False
+
+                            rand = random.randint(1, 10)
+
+                            if rand > 4:
+                                moveRet = self.moveAPath(self.selObj, onPathList)
+                            elif rand > 1 and rand <= 4:
+                                moveRet = self.moveAPath2(self.selObj, onPathList)
+                            elif rand == 1:
+                                moveRet = self.moveAPath2(self.selObj, None)
+
+                            if not moveRet:
                                 return
+
                         else:
                             self._setSelObjNode(nextNode.gridNode.x, nextNode.gridNode.y)
 

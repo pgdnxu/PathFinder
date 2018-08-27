@@ -73,7 +73,6 @@ class PFAlgorithmAStar(PFA):
 
 		startPathNode = self.pMap[startNode.x][startNode.y]
 		openSet.push(startPathNode)
-
 		endPathNode = self.pMap[endNode.x][endNode.y]
 		endPathNode.isInClose = True
 

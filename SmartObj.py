@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # author: Shannon Xu (pgdninf#gmail.com)
 
+import math
 from PFAlgorithm import PFAlgorithm as PFA
 
 class SmartObj(object):
@@ -69,6 +70,35 @@ class SmartObj(object):
             if self._tryStep():
                 return True
 
+        return False
+
+    def _getDistance(self, x1, y1, x2, y2):
+        return math.sqrt(math.pow(x1-x2,2)+math.pow(y1-y2,2))
+
+    def moveOneStepAwayFrom(self, x, y):
+
+        disMax = -1
+        currDv = None
+        for dv in PFA.DIR_VECTOR:
+            nx = self.x + dv[0]
+            ny = self.y + dv[1]
+            if self.gridMap.isFloorNode(nx, ny) and self.gridMap.isValidPos(nx, ny) and not self.gridMap.isThroughTheWall(self.x, self.y, dv):
+                dis = self._getDistance(nx, ny, x, y)
+                if dis > disMax:
+                    disMax = dis
+                    currDv = dv
+
+        if currDv is not None:
+            nx = self.x + currDv[0]
+            ny = self.y + currDv[1]
+
+            self.gridMap.setFloorGridNode(self.x, self.y)
+            self.updateCoord(nx, ny)
+            if self.isSelected:
+                self.gridMap.setSelObjGridNode(self.x, self.y)
+            else:
+                self.gridMap.setNSelObjGridNode(self.x, self.y)
+            return True
         return False
 
     def isSelected(self):
